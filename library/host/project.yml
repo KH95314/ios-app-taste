@@ -1,0 +1,51 @@
+name: PatternHost
+options:
+  bundleIdPrefix: dev.iostaste
+  deploymentTarget:
+    iOS: "26.0"
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    SWIFT_DEFAULT_ACTOR_ISOLATION: MainActor
+    SWIFT_APPROACHABLE_CONCURRENCY: YES
+    GENERATE_INFOPLIST_FILE: YES
+    INFOPLIST_KEY_UILaunchScreen_Generation: YES
+    INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
+    CODE_SIGNING_ALLOWED: NO
+targets:
+  PatternHost:
+    type: application
+    platform: iOS
+    sources:
+      - path: App
+      - path: ../patterns
+        excludes:
+          - "**/*.md"
+          # Each entry's sample pictures share two file names. They are for
+          # reading, not for the app.
+          - "**/*.png"
+      # Free pictures for the samples. CREDITS.md there says where each came from.
+      - path: ../pictures
+        buildPhase: resources
+        excludes:
+          - "**/*.md"
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.iostaste.patternhost
+    scheme:
+      testTargets:
+        - PatternHostUITests
+  # Presses the buttons of an entry so that its motion can be recorded.
+  PatternHostUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: UITests
+    dependencies:
+      - target: PatternHost
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.iostaste.patternhost.uitests
+        TEST_TARGET_NAME: PatternHost
+        # XCTestCase is not on the main actor, so the tests name it themselves.
+        SWIFT_DEFAULT_ACTOR_ISOLATION: nonisolated

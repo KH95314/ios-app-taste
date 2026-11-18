@@ -1,0 +1,42 @@
+name: Pairs
+options:
+  bundleIdPrefix: dev.iostaste
+  deploymentTarget:
+    iOS: "26.0"
+settings:
+  base:
+    # Built the same way as the library's host (see ../README.md, "Swift language mode").
+    SWIFT_VERSION: "5.0"
+    SWIFT_DEFAULT_ACTOR_ISOLATION: MainActor
+    SWIFT_APPROACHABLE_CONCURRENCY: YES
+    GENERATE_INFOPLIST_FILE: YES
+    CODE_SIGNING_ALLOWED: NO
+targets:
+  Pairs:
+    type: application
+    platform: iOS
+    sources:
+      - path: Sources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.iostaste.pairs
+        INFOPLIST_KEY_CFBundleDisplayName: Pairs
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
+        ASSETCATALOG_COMPILER_APPICON_NAME: ""
+    scheme:
+      testTargets:
+        - PairsUITests
+  # Presses every control on the good sides (see UITests/PairsTour.swift).
+  PairsUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: UITests
+    dependencies:
+      - target: Pairs
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.iostaste.pairs.uitests
+        TEST_TARGET_NAME: Pairs
+        SWIFT_DEFAULT_ACTOR_ISOLATION: nonisolated
