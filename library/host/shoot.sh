@@ -29,10 +29,16 @@ xcrun simctl ui "$device" content_size "$size"
 xcrun simctl status_bar "$device" override --time "9:41" --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3 2>/dev/null || true
 
 mkdir -p "$out"
+# Ids, states and variants become parts of file names: no separator, no "..".
+safe() { [[ "$1" =~ ^[A-Za-z0-9_-][A-Za-z0-9._-]*$ ]]; }
 for pattern in "${patterns[@]}"; do
+  safe "$pattern" || { echo "skipped pattern \"$pattern\": use letters, digits, '.', '-' and '_'" >&2; continue; }
   for entry in "${states[@]}"; do
     state="${entry%%:*}"; variant=""; name="$state"
     if [ "$entry" != "$state" ]; then variant="${entry#*:}"; name="$state-$variant"; fi
+    if ! safe "$state" || { [ -n "$variant" ] && ! safe "$variant"; }; then
+      echo "skipped \"$entry\": use letters, digits, '.', '-' and '_'" >&2; continue
+    fi
     xcrun simctl terminate "$device" "$bundle" 2>/dev/null || true
     if [ "${SCROLL:-}" = "end" ]; then name="$name-end"; fi
     xcrun simctl launch "$device" "$bundle" -pattern "$pattern" -state "$state" ${variant:+-variant "$variant"} ${SCROLL:+-scroll "$SCROLL"} >/dev/null

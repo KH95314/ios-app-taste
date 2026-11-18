@@ -750,7 +750,9 @@ permission at launch, or a "what's new" sheet.
 
 ### Verify
 
-1. Delete the app, install it and open it. Count the screens before the main job. None.
+1. On a simulator kept for testing, holding test data only, delete the app, install it and open
+   it. Never on a device or a simulator whose data someone needs. Count the screens before the
+   main job. None.
 2. Refuse every permission. The main job still works, and each feature that needs one says so
    where it is.
 
